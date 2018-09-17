@@ -1,4 +1,4 @@
-import PROPTYPES from '../vue-prop-types'
+import PROPTYPES from '../vue-props-types'
 
 export const storeShape = PropTypes.shape({
     subscribe: PROPTYPES.func.isRequired,

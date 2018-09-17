@@ -1,7 +1,7 @@
 import isPlainObject from 'lodash/isPlainObject'
 import { toType, getType, isFunction, isArray, isInteger, validateType, warn } from './utils'
 
-const VUEPROPTYPES = {
+const VUEPROPSTYPES = {
     get any() {
         return toType('any', {
             type: null
@@ -231,4 +231,4 @@ Object.defineProperty(VUEPROPTYPES, 'sensibleDefaults', {
     }
 })
 
-export default VUEPROPTYPES
+export default VUEPROPSTYPES

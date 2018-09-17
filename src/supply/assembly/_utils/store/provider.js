@@ -1,4 +1,4 @@
-import { storeShape } from './PropType'
+import { storeShape } from './propTypes'
 
 export default {
     name: 'storeProvider',
