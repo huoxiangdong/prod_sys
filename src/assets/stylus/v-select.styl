@@ -1,0 +1,47 @@
+
+
+$initSize = .5rem
+$size = 100% $initSize ($initSize*1.5) ($initSize*2) ($initSize*2.5) ($initSize*3) ($initSize*3.5) ($initSize*4) ($initSize*4.5) ($initSize*5) ($initSize*5.5)
+for level,i in $size
+  .v-select__content-l-{i}
+    .v-select__selection--comma 
+       margin 7px 4px 7px level
+
+
+for level,i in $size
+  .v-input__size-{i}
+    .v-input__slot 
+      height: level 
+      width: level * 5
+// input width height
+for level,i in $size
+  .v-input__height-{i}
+    .v-input__slot 
+      height: level 
+for level,i in $size
+  .v-input__width-{i}
+    .v-input__slot 
+      width: level * 10      
+
+for level,i in $size
+  .v-select__size-{i}
+      height: level 
+      width: level * 5      
+      
+.v-select__color
+ .v-input__slot
+   @extend .grey.lighten-3
+
+// v-text-field label
+.label_top-zero
+  .v-text-field .v-label
+    top 0
+.v-text-field .v-label
+  font-size 15px
+
+// v-text-field outer-ico hover
+.v-input__append-outer
+   margin-bottom 0
+   margin-top 0
+   i:hover 
+     color #000000

@@ -1,0 +1,60 @@
+th 
+ outline none // 边框
+
+$height = 1rem
+$heights = auto ($height*1.5) ($height*2) ($height*2.5)
+
+for level,i in $heights
+  .t_h-{i}
+    height: level !important
+
+$initSize = 1rem
+$size = auto ($initSize*1.5) ($initSize*2) ($initSize*2.5)
+
+for level,i in $size
+  .size-{i}
+    min-width: 0 !important
+    height: level !important
+    width: level !important
+
+.row-hover--shadow 
+  tbody 
+    tr:hover 
+     background #E1F5FE !important
+
+.list-hover--shadow
+  &:hover 
+    background #E1F5FE !important
+//  thead
+//     tr
+//       height: auto !important
+
+// table
+//  border-collapse collapse
+
+// td,th
+//  word-break break-word !important
+
+// $height = 1rem 
+// $heights = auto ($height*1.5) ($height*2) ($height*2.5)
+
+// for level,i in $heights
+//   .h-{i}
+//     height: level
+  
+// .t_header
+//   thead 
+//    :first-child
+//     @extend .h-1
+//     th 
+//      @extend .px-1, .text-xs-right
+
+// table
+//  thead, tbody
+//     td, th
+//       &:not(:nth-child(1)), &:first-child
+//         padding 0 !important
+
+// table,th,td
+//   &:not(:last-child)
+//    border-right 1px solid rgba(0,0,0,0.12)    

@@ -1,0 +1,50 @@
+<template lang="pug">
+ v-canvas(:custom = "custom"
+          @drawing = "canvas")
+</template>
+<script>
+import Vue from 'vue'
+export default {
+  data() {
+    return {
+       custom: {
+          scale: 1,
+          border: "1px solid #ff5000",
+          
+       }
+       
+    };
+  },
+  methods: {
+    canvas(draw) { 
+      // draw.line([
+      //   {
+      //     start: [10, 10],
+      //     length: 150,
+      //     width: 3,
+      //     angle: 50
+      //   }
+      // ]);
+      // draw.point({
+      //     x: 10,
+      //     y: 10,
+      //     r: 1
+      // })
+      // draw.circle({
+      //     x: 250,
+      //     y: 250,
+      //     r: 120,
+      //     w: 5,
+      //     point: 1
+      // })
+    }
+  },
+  mounted() {
+   
+ 
+  //  rect(200,200)
+    
+  
+  }
+}
+</script>
