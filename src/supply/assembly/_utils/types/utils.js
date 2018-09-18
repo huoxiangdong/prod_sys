@@ -1,6 +1,8 @@
 import isPlainObject from 'lodash/isPlainObject'
-import { isFunction } from 'babel-types';
+// import { isFunction } from 'babel-types';
+import { warn } from '../shared'
 
+const WARN = warn('VueType', true)
 const oProto = Object.prototype
 const toString = oProto.toString
 export const hasOwn = oProto.hasOwnProperty 
@@ -13,7 +15,6 @@ export const getType = (fn) => {
     return match && match[1]
 }
 
-export const noop = () => {}
 /** */
 export const has = (obj, prop) => hasOwn.call(obj, prop)
 
@@ -28,7 +29,7 @@ export const isArray = Array.isArray || function(value) {
     return toString.call(value) === '[object Array]'
 }
 /** */
-export const isFunction = (value) => toString.call(value) === '[object Function]'
+export const isFunction = value => toString.call(value) === '[object Function]'
 
 export const withDefault = function(type) {
     Object.defineProperty(type, 'def', {
@@ -38,7 +39,7 @@ export const withDefault = function(type) {
                 return this
             }
             if(!isFunction(def) && !validateType(this, def)) {
-                warn(`${this._vueTypes_name} - invalid default value: "${def}", def`)
+                WARN(`${this._vueTypes_name} - invalid default value: "${def}", def`)
                 return this
             }
             this.default = (isArray(def) || isPlainObject(def)) ? () => def : def
@@ -98,22 +99,14 @@ export const validateType = (type, value, silent = false) => {
         }
     }
     if(!valid) {
-        silent === false && warn(`${namePrefix}value "${value}" should be of type "${expectedType}"`)
+        silent === false && WARN(`${namePrefix}value "${value}" should be of type "${expectedType}"`)
         return false
     }
     if(hasOwn.call(typeToCheck, 'validator') && isFunction(typeToCheck.validator)) {
         valid = typeToCheck.validator(value)
-        if(!valid && silent === false) warn(`${namePrefix}custom validation failed`)
+        if(!valid && silent === false) WARN(`${namePrefix}custom validation failed`)
         return valid
     }
     return valid
 }
 
-let warn = noop
-
-if(process.env.NODE_ENV !== 'production') { // dev下生效 否则 noop˙
-    const hasConsole = typeof console !== 'undefined'
-    warn = msg => hasConsole && console.warn(`[VueTypes warn]: &{msg}`)
-}
-
-export { warn }

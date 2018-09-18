@@ -1,7 +1,7 @@
 import isPlainObject from 'lodash/isPlainObject'
 import { toType, getType, isFunction, isArray, isInteger, validateType, warn } from './utils'
 
-const VUEPROPSTYPES = {
+const PROPTYPES = {
     get any() {
         return toType('any', {
             type: null
@@ -140,6 +140,9 @@ const VUEPROPSTYPES = {
             type: instanceConstructor
         }) 
     },
+    /**
+     * 对于数组的每个元素进行类型验证
+     */
     arrayOf(type) {
         return toType('arrayOf', {
             type: Array,
@@ -231,4 +234,4 @@ Object.defineProperty(VUEPROPTYPES, 'sensibleDefaults', {
     }
 })
 
-export default VUEPROPSTYPES
+export default PROPTYPES
