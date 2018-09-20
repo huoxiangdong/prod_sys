@@ -1,17 +1,18 @@
-// base rc-table 6.1.7 7cd6abab4a2bd55adc7a9207c23feb62c3cd015b
+// base rc-table 6.2.8
 import T from './src/Table'
 import Column from './src/Column'
 import ColumnGroup from './src/ColumnGroup'
 import { getOptionProps, getKey, getClass,
   getStyle, getEvents, getSlotOptions, camelize, getSlots,
-} from '@util/vc-util/props-util'
+} from '../_utils/props'
+
 const Table = {
   name: 'Table',
   Column,
   ColumnGroup,
   props: T.props,
   methods: {
-    normalize (elements = []) { // $slots.default -> columns
+    normalize (elements = []) {
       const columns = []
       elements.forEach(element => {
         if (!element.tag) {
@@ -47,7 +48,7 @@ const Table = {
     const { $listeners, $slots, normalize } = this
     const props = getOptionProps(this)
     const columns = props.columns || normalize($slots.default)
-    
+
     const tProps = {
       props: {
         ...props,
@@ -55,6 +56,7 @@ const Table = {
       },
       on: $listeners,
     }
+    
     return (
       <T {...tProps}/>
     )

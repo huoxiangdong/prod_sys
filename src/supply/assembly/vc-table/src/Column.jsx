@@ -1,24 +1,24 @@
-import PropTypes from '@util/vue-types'
+import PROPTYPES from '../../_utils/types'
 
 export default {
   name: 'Column',
   props: {
-    colSpan: PropTypes.number,
-    title: PropTypes.any, // value
-    dataIndex: PropTypes.string,
-    width: PropTypes.oneOfType([ // 宽
-      PropTypes.number,
-      PropTypes.string,
+    colSpan: PROPTYPES.number,
+    title: PROPTYPES.any,
+    dataIndex: PROPTYPES.string,
+    width: PROPTYPES.oneOfType([
+      PROPTYPES.number,
+      PROPTYPES.string,
     ]),
-    fixed: PropTypes.oneOf([
-       true,
+    fixed: PROPTYPES.oneOf([
+      true,
       'left',
       'right',
     ]),
-    customRender: PropTypes.func,
-    className: PropTypes.string,
-    // onCellClick: PropTypes.func,
-    customCell: PropTypes.func,
-    customHeaderCell: PropTypes.func,
+    customRender: PROPTYPES.func,
+    className: PROPTYPES.string,
+    // onCellClick: PROPTYPES.func,
+    customCell: PROPTYPES.func,
+    customHeaderCell: PROPTYPES.func,
   },
 }

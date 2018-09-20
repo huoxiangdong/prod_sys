@@ -1,76 +1,73 @@
 
 /* eslint-disable camelcase */
-import PropTypes from '@util/vue-types'
-import { debounce, warningOnce } from './utils'
-import shallowequal from 'shallowequal'
-import addEventListener from '@util/dom/addEventListener'
-import { Provider, create } from '@util/store'
+import shallowequal from 'shallowequal' // 比较对象是否相等
 import merge from 'lodash/merge'
-import ColumnManager from './ColumnManager'
 import classes from 'component-classes'
+import PROPTYPES from '../../_utils/types'
+import { debounce, warningOnce } from './utils'
+import addEventListener from '../../_utils/DOM/addEventListener'
+import { Provider, create } from '../../_utils/store'
+import ColumnManager from './ColumnManager'
 import HeadTable from './HeadTable'
 import BodyTable from './BodyTable'
 import ExpandableTable from './ExpandableTable'
-import { initDefaultProps, getOptionProps } from '@util/vc-util/props-util'
-import BaseMixin from '@util/vc-util/BaseMixin'
+import { initDefaultProps, getOptionProps } from '../../_utils/props'
+import baseMixin from '../../_utils/baseMixin'
 
 export default {
   name: 'Table',
-  mixins: [BaseMixin], // setState __emit
-  props: initDefaultProps({ // 配置默认
-    data: PropTypes.array,
-    useFixedHeader: PropTypes.bool,
-    columns: PropTypes.array,
-    prefixCls: PropTypes.string,
-    bodyStyle: PropTypes.object,
-    rowKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]), // row key
-    rowClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    customRow: PropTypes.func,
-    customHeaderRow: PropTypes.func,
+  mixins: [baseMixin],
+  props: initDefaultProps({
+    data: PROPTYPES.array,
+    useFixedHeader: PROPTYPES.bool,
+    columns: PROPTYPES.array,
+    prefixCls: PROPTYPES.string,
+    bodyStyle: PROPTYPES.object,
+    rowKey: PROPTYPES.oneOfType([PROPTYPES.string, PROPTYPES.func]),
+    rowClassName: PROPTYPES.oneOfType([PROPTYPES.string, PROPTYPES.func]),
+    customRow: PROPTYPES.func,
+    customHeaderRow: PROPTYPES.func,
     // onRowClick: PropTypes.func,
     // onRowDoubleClick: PropTypes.func,
     // onRowContextMenu: PropTypes.func,
     // onRowMouseEnter: PropTypes.func,
     // onRowMouseLeave: PropTypes.func,
-    showHeader: PropTypes.bool,
-    title: PropTypes.func, // 头
-    footer: PropTypes.func, // 底
-    id: PropTypes.string,  
-    emptyText: PropTypes.any,
-    scroll: PropTypes.object,
-    rowRef: PropTypes.func,
-    getBodyWrapper: PropTypes.func,
-    
-    components: PropTypes.shape({
-      table: PropTypes.any,
-      header: PropTypes.shape({
-        wrapper: PropTypes.any,
-        row: PropTypes.any,
-        cell: PropTypes.any,
+    showHeader: PROPTYPES.bool,
+    title: PROPTYPES.func,
+    id: PROPTYPES.string,
+    footer: PROPTYPES.func,
+    emptyText: PROPTYPES.any,
+    scroll: PROPTYPES.object,
+    rowRef: PROPTYPES.func,
+    getBodyWrapper: PROPTYPES.func,
+    components: PROPTYPES.shape({
+      table: PROPTYPES.any,
+      header: PROPTYPES.shape({
+        wrapper: PROPTYPES.any,
+        row: PROPTYPES.any,
+        cell: PROPTYPES.any,
       }),
-      body: PropTypes.shape({
-        wrapper: PropTypes.any,
-        row: PropTypes.any,
-        cell: PropTypes.any,
+      body: PROPTYPES.shape({
+        wrapper: PROPTYPES.any,
+        row: PROPTYPES.any,
+        cell: PROPTYPES.any,
       }),
     }),
-    // 扩展行
-    expandIconAsCell: PropTypes.bool,
-    expandedRowKeys: PropTypes.array,
-    expandedRowClassName: PropTypes.func,
-    defaultExpandAllRows: PropTypes.bool,
-    defaultExpandedRowKeys: PropTypes.array,
-    expandIconColumnIndex: PropTypes.number,
-    expandedRowRender: PropTypes.func,
-    
-    childrenColumnName: PropTypes.string,
-    indentSize: PropTypes.number,
-    expandRowByClick: PropTypes.bool,
+    expandIconAsCell: PROPTYPES.bool,
+    expandedRowKeys: PROPTYPES.array,
+    expandedRowClassName: PROPTYPES.func,
+    defaultExpandAllRows: PROPTYPES.bool,
+    defaultExpandedRowKeys: PROPTYPES.array,
+    expandIconColumnIndex: PROPTYPES.number,
+    expandedRowRender: PROPTYPES.func,
+    childrenColumnName: PROPTYPES.string,
+    indentSize: PROPTYPES.number,
+    expandRowByClick: PROPTYPES.bool,
   }, {
     data: [],
     useFixedHeader: false,
-    rowKey: 'key', // 主键 行索引值
-    rowClassName: () => '', // 行自定义类
+    rowKey: 'key',
+    rowClassName: () => '',
     prefixCls: 'rc-table',
     bodyStyle: {},
     showHeader: true,
@@ -109,7 +106,7 @@ export default {
     this.store = create({
       currentHoverKey: null,
       fixedColumnsHeadRowsHeight: [],
-      fixedColumnsBodyRowsHeight: [],
+      fixedColumnsBodyRowsHeight: {},
     })
 
     this.setScrollPosition('left')
@@ -119,7 +116,7 @@ export default {
   data () {
     this.preData = [...this.data]
     return {
-      columnManager: new ColumnManager(this.columns), // 处理 columns 的类
+      columnManager: new ColumnManager(this.columns),
       sComponents: merge({
         table: 'table',
         header: {
@@ -142,7 +139,6 @@ export default {
   },
   watch: {
     components (val) {
-      
       this._components = merge({
         table: 'table',
         header: {
@@ -163,7 +159,6 @@ export default {
       }
     },
     data (val) {
-     
       if (val.length === 0 && this.hasScrollX()) {
         this.$nextTick(() => {
           this.resetScrollX()
@@ -173,7 +168,6 @@ export default {
   },
 
   mounted () {
-    
     this.$nextTick(() => {
       if (this.columnManager.isAnyColumnsFixed()) {
         this.handleWindowResize()
@@ -206,16 +200,14 @@ export default {
     }
   },
   methods: {
-    getRowKey (record, index) { // row i 索引键
-
+    getRowKey (record, index) {
       const rowKey = this.rowKey
-      
       const key = (typeof rowKey === 'function')
         ? rowKey(record, index) : record[rowKey]
       warningOnce(
         key !== undefined,
         'Each record in table should have a unique `key` prop,' +
-        'or set `rowKey` to an unique primary key.' + '表中的每条记录都必须有唯一 `key`'
+        'or set `rowKey` to an unique primary key.'
       )
       return key === undefined ? index : key
     },
@@ -274,10 +266,18 @@ export default {
       const fixedColumnsHeadRowsHeight = [].map.call(
         headRows, row => row.getBoundingClientRect().height || 'auto'
       )
-      const fixedColumnsBodyRowsHeight = [].map.call(
-        bodyRows, row => row.getBoundingClientRect().height || 'auto'
-      )
       const state = this.store.getState()
+      const fixedColumnsBodyRowsHeight = [].reduce.call(
+        bodyRows,
+        (acc, row) => {
+          const rowKey = row.getAttribute('data-row-key')
+          const height =
+            row.getBoundingClientRect().height || state.fixedColumnsBodyRowsHeight[rowKey] || 'auto'
+          acc[rowKey] = height
+          return acc
+        },
+        {},
+      )
       if (shallowequal(state.fixedColumnsHeadRowsHeight, fixedColumnsHeadRowsHeight) &&
           shallowequal(state.fixedColumnsBodyRowsHeight, fixedColumnsBodyRowsHeight)) {
         return
@@ -324,6 +324,10 @@ export default {
 
     handleBodyScrollTop  (e) {
       const target = e.target
+      // Fix https://github.com/ant-design/ant-design/issues/9033
+      if (e.currentTarget !== target) {
+        return
+      }
       const { scroll = {}} = this
       const { ref_headTable, ref_bodyTable, ref_fixedColumnsBodyLeft, ref_fixedColumnsBodyRight } = this
       if (target.scrollTop !== this.lastScrollTop && scroll.y && target !== ref_headTable) {
@@ -346,6 +350,32 @@ export default {
       this.handleBodyScrollLeft(e)
       this.handleBodyScrollTop(e)
     },
+    handleWheel (event) {
+      const { scroll = {}} = this.$props
+      if (window.navigator.userAgent.match(/Trident\/7\./) && scroll.y) {
+        event.preventDefault()
+        const wd = event.deltaY
+        const target = event.target
+        const { bodyTable, fixedColumnsBodyLeft, fixedColumnsBodyRight } = this
+        let scrollTop = 0
+
+        if (this.lastScrollTop) {
+          scrollTop = this.lastScrollTop + wd
+        } else {
+          scrollTop = wd
+        }
+
+        if (fixedColumnsBodyLeft && target !== fixedColumnsBodyLeft) {
+          fixedColumnsBodyLeft.scrollTop = scrollTop
+        }
+        if (fixedColumnsBodyRight && target !== fixedColumnsBodyRight) {
+          fixedColumnsBodyRight.scrollTop = scrollTop
+        }
+        if (bodyTable && target !== bodyTable) {
+          bodyTable.scrollTop = scrollTop
+        }
+      }
+    },
     saveChildrenRef (name, node) {
       this[`ref_${name}`] = node
     },
@@ -356,7 +386,7 @@ export default {
 
       const table = [
         this.renderTable({
-          columns: this.columnManager.groupedColumns(), // columns经由 columnsManager类处理过
+          columns: this.columnManager.groupedColumns(),
           isAnyColumnsFixed,
         }),
         this.renderEmptyText(),
@@ -416,6 +446,7 @@ export default {
           fixed={fixed}
           tableClassName={tableClassName}
           getRowKey={this.getRowKey}
+          handleWheel={this.handleWheel}
           handleBodyScroll={this.handleBodyScroll}
           expander={this.expander}
           isAnyColumnsFixed={isAnyColumnsFixed}
@@ -461,7 +492,6 @@ export default {
     const props = getOptionProps(this)
     const { $listeners, columnManager, getRowKey } = this
     const prefixCls = props.prefixCls
-
     let className = props.prefixCls
     if (props.useFixedHeader || (props.scroll && props.scroll.y)) {
       className += ` ${prefixCls}-fixed-header`
@@ -481,9 +511,9 @@ export default {
         getRowKey,
       },
       on: { ...$listeners },
-      scopedSlots: {
+      scopedSlots: { // 作用域插槽
         default: (expander) => {
-          this.expander = expander
+          this.expander = expander // 扩展
           return (
             <div
               ref='tableNode'
@@ -502,6 +532,7 @@ export default {
         },
       },
     }
+    
     return (
       <Provider store={this.store}>
         <ExpandableTable
@@ -509,5 +540,5 @@ export default {
         />
       </Provider>
     )
-  },
+  }
 }

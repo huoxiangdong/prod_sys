@@ -1,10 +1,10 @@
-import PropTypes from '@util/vue-types'
+import PROPTYPES from '../../_utils/types'
 
 export default {
   name: 'ColGroup',
   props: {
-    fixed: PropTypes.string,
-    columns: PropTypes.array,
+    fixed: PROPTYPES.string,
+    columns: PROPTYPES.array,
   },
   inject: {
     table: { default: {}},
@@ -16,12 +16,7 @@ export default {
     let cols = []
 
     if (expandIconAsCell && fixed !== 'right') {
-      cols.push(
-        <col
-          class={`${prefixCls}-expand-icon-col`}
-          key='rc-table-expand-icon-col'
-        />
-      )
+      cols.push(<col class={`${prefixCls}-expand-icon-col`} key='rc-table-expand-icon-col' />)
     }
 
     let leafColumns
@@ -44,11 +39,7 @@ export default {
         )
       })
     )
-    return (
-      <colgroup>
-        {cols}
-      </colgroup>
-    )
+    return <colgroup>{cols}</colgroup>
   },
 
 }

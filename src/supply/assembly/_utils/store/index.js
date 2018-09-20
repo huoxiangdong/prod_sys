@@ -1,3 +1,3 @@
-export { default as provider } from './provider'
-export { default as connect } from './connect'
+export { default as Provider } from './Provider'
+export { default as Connect } from './Connect'
 export { default as create } from './create'

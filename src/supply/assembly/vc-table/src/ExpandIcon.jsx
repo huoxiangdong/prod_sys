@@ -1,14 +1,14 @@
-import PropTypes from '@util/vue-types'
-import BaseMixin from '@util/vc-util/BaseMixin'
+import PROPTYPES from '../../_utils/types'
+import baseMixin from '../../_utils/baseMixin'
 export default {
-  mixins: [BaseMixin],
+  mixins: [baseMixin],
   name: 'ExpandIcon',
   props: {
-    record: PropTypes.object,
-    prefixCls: PropTypes.string,
-    expandable: PropTypes.any,
-    expanded: PropTypes.bool,
-    needIndentSpaced: PropTypes.bool,
+    record: PROPTYPES.object,
+    prefixCls: PROPTYPES.string,
+    expandable: PROPTYPES.any,
+    expanded: PROPTYPES.bool,
+    needIndentSpaced: PROPTYPES.bool,
   },
   methods: {
     onExpand (e) {

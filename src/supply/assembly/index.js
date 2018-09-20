@@ -9,8 +9,11 @@ import DPopup from './DPopup'
 import DCraft from './DCraft'
 import DFiche from './DFiche'
 // table test
-import Table from './vc-table'
-import Tree from './vc-tree'
+// import Table from './vc-table'
+// import Tree from './vc-tree'
+/**
+ * TEST
+ */
 
 
 const assembly = {
@@ -23,8 +26,9 @@ const assembly = {
     DPopup,
     DCraft,
     DFiche,
-    Table,
-    Tree
+    // TEST
+ 
+
 }
 
 export default {

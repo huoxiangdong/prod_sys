@@ -1,18 +1,18 @@
-import PropTypes from '@util/vue-types'
+import PROPTYPES from '../../_utils/types'
 import { measureScrollbar } from './utils'
-import BaseTable from './BaseTable'
+// import baseTable from './baseTable'
 
 export default {
   name: 'HeadTable',
   props: {
-    fixed: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.bool,
+    fixed: PROPTYPES.oneOfType([
+      PROPTYPES.string,
+      PROPTYPES.bool,
     ]),
-    columns: PropTypes.array.isRequired,
-    tableClassName: PropTypes.string.isRequired,
-    handleBodyScrollLeft: PropTypes.func.isRequired,
-    expander: PropTypes.object.isRequired,
+    columns: PROPTYPES.array.isRequired,
+    tableClassName: PROPTYPES.string.isRequired,
+    handleBodyScrollLeft: PROPTYPES.func.isRequired,
+    expander: PROPTYPES.object.isRequired,
   },
   inject: {
     table: { default: {}},

@@ -1,20 +1,21 @@
-import PropTypes from '@util/vue-types'
+import PROPTYPES from '../../_utils/types'
 import { measureScrollbar } from './utils'
 import BaseTable from './BaseTable'
 
 export default {
   name: 'BodyTable',
   props: {
-    fixed: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.bool,
+    fixed: PROPTYPES.oneOfType([
+      PROPTYPES.string,
+      PROPTYPES.bool,
     ]),
-    columns: PropTypes.array.isRequired,
-    tableClassName: PropTypes.string.isRequired,
-    handleBodyScroll: PropTypes.func.isRequired,
-    getRowKey: PropTypes.func.isRequired,
-    expander: PropTypes.object.isRequired,
-    isAnyColumnsFixed: PropTypes.bool,
+    columns: PROPTYPES.array.isRequired,
+    tableClassName: PROPTYPES.string.isRequired,
+    handleBodyScroll: PROPTYPES.func.isRequired,
+    handleWheel: PROPTYPES.func.isRequired,
+    getRowKey: PROPTYPES.func.isRequired,
+    expander: PROPTYPES.object.isRequired,
+    isAnyColumnsFixed: PROPTYPES.bool,
   },
   inject: {
     table: { default: {}},
@@ -40,6 +41,7 @@ export default {
       tableClassName,
       getRowKey,
       handleBodyScroll,
+      handleWheel,
       expander,
       isAnyColumnsFixed,
     } = this
@@ -48,7 +50,7 @@ export default {
     const innerBodyStyle = {}
 
     if (scroll.x || fixed) {
-      bodyStyle.overflowX = bodyStyle.overflowX || 'auto'
+      bodyStyle.overflowX = bodyStyle.overflowX || 'scroll'
       // Fix weired webkit render bug
       // https://github.com/ant-design/ant-design/issues/7783
       bodyStyle.WebkitTransform = 'translate3d (0, 0, 0)'
@@ -108,6 +110,7 @@ export default {
             class={`${prefixCls}-body-inner`}
             style={innerBodyStyle}
             ref={refName}
+            onWheel={handleWheel}
             onScroll={handleBodyScroll}
           >
             {baseTable}
@@ -121,6 +124,7 @@ export default {
         class={`${prefixCls}-body`}
         style={bodyStyle}
         ref='bodyTable'
+        onWheel={handleWheel}
         onScroll={handleBodyScroll}
       >
         {baseTable}

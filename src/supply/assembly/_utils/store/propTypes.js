@@ -1,6 +1,6 @@
 import PROPTYPES from '../types'
 
-export const storeShape = PropTypes.shape({
+export const storeShape = PROPTYPES.shape({
     subscribe: PROPTYPES.func.isRequired,
     setState: PROPTYPES.func.isRequired,
     getState: PROPTYPES.func.isRequired

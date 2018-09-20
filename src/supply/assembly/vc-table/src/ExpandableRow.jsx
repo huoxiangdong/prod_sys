@@ -1,33 +1,33 @@
-import PropTypes from '@util/vue-types'
+import PROPTYPES from '../../_utils/types'
 import ExpandIcon from './ExpandIcon'
-import BaseMixin from '@util/vc-util/BaseMixin'
-import { connect } from '@util/store'
+import baseMixin from '../../_utils/baseMixin'
+import { Connect } from '../../_utils/store'
 
 const ExpandableRow = {
-  mixins: [BaseMixin],
+  mixins: [baseMixin],
   name: 'ExpandableRow',
   props: {
-    prefixCls: PropTypes.string.isRequired,
-    rowKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
+    prefixCls: PROPTYPES.string.isRequired,
+    rowKey: PROPTYPES.oneOfType([
+      PROPTYPES.string,
+      PROPTYPES.number,
     ]).isRequired,
-    fixed: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.bool,
+    fixed: PROPTYPES.oneOfType([
+      PROPTYPES.string,
+      PROPTYPES.bool,
     ]),
-    record: PropTypes.object.isRequired,
-    indentSize: PropTypes.number,
-    needIndentSpaced: PropTypes.bool.isRequired,
-    expandRowByClick: PropTypes.bool,
-    expanded: PropTypes.bool.isRequired,
-    expandIconAsCell: PropTypes.bool,
-    expandIconColumnIndex: PropTypes.number,
-    childrenColumnName: PropTypes.string,
-    expandedRowRender: PropTypes.func,
-    // onExpandedChange: PropTypes.func.isRequired,
-    // onRowClick: PropTypes.func,
-    // children: PropTypes.func.isRequired,
+    record: PROPTYPES.object.isRequired,
+    indentSize: PROPTYPES.number,
+    needIndentSpaced: PROPTYPES.bool.isRequired,
+    expandRowByClick: PROPTYPES.bool,
+    expanded: PROPTYPES.bool.isRequired,
+    expandIconAsCell: PROPTYPES.bool,
+    expandIconColumnIndex: PROPTYPES.number,
+    childrenColumnName: PROPTYPES.string,
+    expandedRowRender: PROPTYPES.func,
+    // onExpandedChange: PROPTYPES.func.isRequired,
+    // onRowClick: PROPTYPES.func,
+    // children: PROPTYPES.func.isRequired,
   },
 
   beforeDestroy () {
@@ -123,6 +123,6 @@ const ExpandableRow = {
   },
 }
 
-export default connect(({ expandedRowKeys }, { rowKey }) => ({
+export default Connect(({ expandedRowKeys }, { rowKey }) => ({
   expanded: !!~expandedRowKeys.indexOf(rowKey),
 }))(ExpandableRow)

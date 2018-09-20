@@ -1,5 +1,6 @@
 import isPlainObject from 'lodash/isPlainObject'
-import { toType, getType, isFunction, isArray, isInteger, validateType, warn } from './utils'
+import { toType, getType, validateType } from './utils'
+import { warn, isFunction, isArray, isInteger } from '../shared'
 
 const PROPTYPES = {
     get any() {
@@ -69,25 +70,27 @@ const PROPTYPES = {
             }
         })
     },
-    oneOf(arr) {
-        if(!isArray(arr)) {
-            throw new TypeError('[VueTypes error]: You must provide an array as argument')
+    oneOf (arr) {
+        if (!isArray(arr)) {
+          throw new TypeError('[VueTypes error]: You must provide an array as argument')
         }
         const msg = `oneOf - value should be one of "${arr.join('", "')}"`
         const allowedTypes = arr.reduce((ret, v) => {
-            if(v !== null && v !== undefined) {
-                ret.indexOf(v.constructor) === -1 && ret.push(v.constructor) // ret.includes
-            }
-            return ret
+          if (v !== null && v !== undefined) {
+            ret.indexOf(v.constructor) === -1 && ret.push(v.constructor)
+          }
+          return ret
         }, [])
-
+    
         return toType('oneOf', {
-            type: allowedTypes.length > 0 ? allowedTypes: null,
-            validator(value) {
-                const valid = arr.indexOf(value) !== -1
-            }
+          type: allowedTypes.length > 0 ? allowedTypes : null,
+          validator (value) {
+            const valid = arr.indexOf(value) !== -1
+            if (!valid) warn(msg)
+            return valid
+          },
         })
-    },
+      },
     oneOfType(arr) {
         if(!isArray(arr)) {
             throw new TypeError('[VueTypes error]: You must provide an array as argument')
@@ -218,7 +221,7 @@ const typeDefaults = () => ({
 
 let currentDefaults = typeDefaults()
 
-Object.defineProperty(VUEPROPTYPES, 'sensibleDefaults', {
+Object.defineProperty(PROPTYPES, 'sensibleDefaults', {
     enumerable: false,
     set(value) {
         if(value === false) {

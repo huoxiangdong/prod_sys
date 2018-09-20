@@ -4,9 +4,10 @@ export default {
     directives: {
         ref: {
             bind: function(el, binding, vnode) {
+                console.log(binding)
                 binding.value(vnode.componentInstance ? vnode.componentInstance : vnode.elm)
             },
-            update: function(el, bingding, vnode) {
+            update: function(el, binding, vnode) {
                 binding.value(vnode.componentInstance ? vnode.componentInstance : vnode.elm)
             },
             unbind: function(el, binding, vnode) {

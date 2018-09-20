@@ -1,17 +1,17 @@
-import PropTypes from '@util/vue-types'
-import { connect } from '@util/store'
-import { mergeProps } from '@util/vc-util/props-util'
+import PROPTYPES from '../../_utils/types'
+import { Connect } from '../../_utils/store'
+import { mergeProps } from '../../_utils/props'
 
 const TableHeaderRow = {
   props: {
-    index: PropTypes.number,
-    fixed: PropTypes.string,
-    columns: PropTypes.array,
-    rows: PropTypes.array,
-    row: PropTypes.array,
-    components: PropTypes.object,
-    height: PropTypes.any,
-    customHeaderRow: PropTypes.func,
+    index: PROPTYPES.number,
+    fixed: PROPTYPES.string,
+    columns: PROPTYPES.array,
+    rows: PROPTYPES.array,
+    row: PROPTYPES.array,
+    components: PROPTYPES.object,
+    height: PROPTYPES.any,
+    customHeaderRow: PROPTYPES.func,
   },
   name: 'TableHeaderRow',
   render (h) {
@@ -40,7 +40,7 @@ const TableHeaderRow = {
           })
 
           if (column.align) {
-            headerCellProps.style = { textAlign: column.align }
+            headerCellProps.style = { ...customProps.style, textAlign: column.align }
           }
 
           if (typeof HeaderCell === 'function') {
@@ -77,7 +77,7 @@ function getRowHeight (state, props) {
   return null
 }
 
-export default connect((state, props) => {
+export default Connect((state, props) => {
   return {
     height: getRowHeight(state, props),
   }

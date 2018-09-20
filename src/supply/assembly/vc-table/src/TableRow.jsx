@@ -1,66 +1,69 @@
-import PropTypes from '@util/vue-types'
-import { connect } from '@util/store'
+import PROPTYPES from '../../_utils/types'
+import { Connect } from '../../_utils/store'
 import TableCell from './TableCell'
 import { warningOnce } from './utils'
-import { initDefaultProps, mergeProps, getStyle } from '@util/vc-util/props-util'
-import BaseMixin from '@util/vc-util/BaseMixin'
-function noop () {}
+import { initDefaultProps, mergeProps, getStyle } from '../../_utils/props'
+import baseMixin from '../../_utils/baseMixin'
+import { noop } from '../../_utils/shared'
+
 const TableRow = {
   name: 'TableRow',
-  mixins: [BaseMixin],
+  mixins: [baseMixin],
   props: initDefaultProps({
-    customRow: PropTypes.func,
-    // onRowClick: PropTypes.func,
-    // onRowDoubleClick: PropTypes.func,
-    // onRowContextMenu: PropTypes.func,
-    // onRowMouseEnter: PropTypes.func,
-    // onRowMouseLeave: PropTypes.func,
-    record: PropTypes.object,
-    prefixCls: PropTypes.string,
-    // onHover: PropTypes.func,
-    columns: PropTypes.array,
-    height: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
+    customRow: PROPTYPES.func,
+    // onRowClick: PROPTYPES.func,
+    // onRowDoubleClick: PROPTYPES.func,
+    // onRowContextMenu: PROPTYPES.func,
+    // onRowMouseEnter: PROPTYPES.func,
+    // onRowMouseLeave: PROPTYPES.func,
+    record: PROPTYPES.object,
+    prefixCls: PROPTYPES.string,
+    // onHover: PROPTYPES.func,
+    columns: PROPTYPES.array,
+    height: PROPTYPES.oneOfType([
+      PROPTYPES.string,
+      PROPTYPES.number,
     ]),
-    index: PropTypes.number,
-    rowKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
+    index: PROPTYPES.number,
+    rowKey: PROPTYPES.oneOfType([
+      PROPTYPES.string,
+      PROPTYPES.number,
     ]).isRequired,
-    className: PropTypes.string,
-    indent: PropTypes.number,
-    indentSize: PropTypes.number,
-    hasExpandIcon: PropTypes.func.isRequired,
-    hovered: PropTypes.bool.isRequired,
-    visible: PropTypes.bool.isRequired,
-    store: PropTypes.object.isRequired,
-    fixed: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.bool,
+    className: PROPTYPES.string,
+    indent: PROPTYPES.number,
+    indentSize: PROPTYPES.number,
+    hasExpandIcon: PROPTYPES.func,
+    hovered: PROPTYPES.bool.isRequired,
+    visible: PROPTYPES.bool.isRequired,
+    store: PROPTYPES.object.isRequired,
+    fixed: PROPTYPES.oneOfType([
+      PROPTYPES.string,
+      PROPTYPES.bool,
     ]),
-    renderExpandIcon: PropTypes.func,
-    renderExpandIconCell: PropTypes.func,
-    components: PropTypes.any,
-    expandedRow: PropTypes.bool,
-    isAnyColumnsFixed: PropTypes.bool,
-    ancestorKeys: PropTypes.array.isRequired,
-    expandIconColumnIndex: PropTypes.number,
-    expandRowByClick: PropTypes.bool,
-    // visible: PropTypes.bool,
-    // hovered: PropTypes.bool,
-    // height: PropTypes.any,
+    renderExpandIcon: PROPTYPES.func,
+    renderExpandIconCell: PROPTYPES.func,
+    components: PROPTYPES.any,
+    expandedRow: PROPTYPES.bool,
+    isAnyColumnsFixed: PROPTYPES.bool,
+    ancestorKeys: PROPTYPES.array.isRequired,
+    expandIconColumnIndex: PROPTYPES.number,
+    expandRowByClick: PROPTYPES.bool,
+    // visible: PROPTYPES.bool,
+    // hovered: PROPTYPES.bool,
+    // height: PROPTYPES.any,
   }, {
-    expandIconColumnIndex: 0,
-    expandRowByClick: false,
+    // expandIconColumnIndex: 0,
+    // expandRowByClick: false,
     hasExpandIcon () {},
     renderExpandIcon () {},
     renderExpandIconCell () {},
   }),
 
   data () {
-    this.shouldRender = this.visible
-    return {}
+    // this.shouldRender = this.visible
+    return {
+      shouldRender: this.visible,
+    }
   },
 
   mounted () {
@@ -125,11 +128,15 @@ const TableRow = {
     },
 
     setRowHeight () {
-      const { store, index } = this
-      const fixedColumnsBodyRowsHeight = store.getState().fixedColumnsBodyRowsHeight.slice()
+      const { store, rowKey } = this
+      const { fixedColumnsBodyRowsHeight } = store.getState()
       const height = this.rowRef.getBoundingClientRect().height
-      fixedColumnsBodyRowsHeight[index] = height
-      store.setState({ fixedColumnsBodyRowsHeight })
+      store.setState({
+        fixedColumnsBodyRowsHeight: {
+          ...fixedColumnsBodyRowsHeight,
+          [rowKey]: height,
+        },
+      })
     },
 
     getStyle () {
@@ -174,6 +181,7 @@ const TableRow = {
       prefixCls,
       columns,
       record,
+      rowKey,
       index,
       customRow = noop,
       indent,
@@ -243,7 +251,11 @@ const TableRow = {
         contextmenu: this.onContextMenu,
       },
       class: rowClassName,
-    }, { ...rowProps, style })
+    }, { ...rowProps, style }, {
+      attrs: {
+        'data-row-key': rowKey,
+      },
+    })
     return (
       <BodyRow
         {...bodyRowProps}
@@ -256,7 +268,7 @@ const TableRow = {
 
 function getRowHeight (state, props) {
   const { expandedRowsHeight, fixedColumnsBodyRowsHeight } = state
-  const { fixed, index, rowKey } = props
+  const { fixed, rowKey } = props
 
   if (!fixed) {
     return null
@@ -266,14 +278,14 @@ function getRowHeight (state, props) {
     return expandedRowsHeight[rowKey]
   }
 
-  if (fixedColumnsBodyRowsHeight[index]) {
-    return fixedColumnsBodyRowsHeight[index]
+  if (fixedColumnsBodyRowsHeight[rowKey]) {
+    return fixedColumnsBodyRowsHeight[rowKey]
   }
 
   return null
 }
 
-export default connect((state, props) => {
+export default Connect((state, props) => {
   const { currentHoverKey, expandedRowKeys } = state
   const { rowKey, ancestorKeys } = props
   const visible = ancestorKeys.length === 0 || ancestorKeys.every(k => ~expandedRowKeys.indexOf(k))

@@ -73,9 +73,11 @@ const getSlotOptions = ele => {
 }
 
 const getOptionProps = instance => {
+    
     if(instance.componentsOptions) {
         const componentOptions = instance.componetOptions
         const { propsData = {}, Ctor = {} } = componentOptions
+        const props = (Ctor.options || {}).props || {}
         const res = {}
         for(const [k, v] of Object.entries(props)) {
             const def = v.default 
@@ -86,6 +88,7 @@ const getOptionProps = instance => {
         return { ...res, ...propsData }
     }
     const { $options = {}, $props = {} } = instance
+    
     return filterProps($props, $options.propsData)
 }
 
@@ -216,13 +219,15 @@ export function filterEmpty(children = []) {
 }
 
 const initDefaultProps = (propTypes, defaultProps) => {
+    
     Object.keys(defaultProps).forEach(k => {
-        if(propTypes[key]) {
-            propTypes[k].def && (propTypes[key] = propTypes[key].def(defaultProps[key])) 
+        if(propTypes[k]) {
+            propTypes[k].def && (propTypes[k] = propTypes[k].def(defaultProps[k])) 
         } else {
             throw new Error(`not have ${k} prop`)
         }
     })
+
     return propTypes
 }
 

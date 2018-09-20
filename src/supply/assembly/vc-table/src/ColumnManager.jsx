@@ -6,7 +6,7 @@ export default class ColumnManager {
 
   isAnyColumnsFixed () {
     return this._cache('isAnyColumnsFixed', () => {
-      return this.columns.some(column => !!column.fixed) // fixed？？
+      return this.columns.some(column => !!column.fixed)
     })
   }
 
@@ -83,7 +83,7 @@ export default class ColumnManager {
           parentColumn.colSpan = parentColumn.colSpan || 0
           if (newColumn.children && newColumn.children.length > 0) {
             newColumn.children = _groupColumns(newColumn.children, currentRow + 1, newColumn, rows)
-            parentColumn.colSpan = parentColumn.colSpan + newColumn.colSpan
+            parentColumn.colSpan += newColumn.colSpan
           } else {
             parentColumn.colSpan++
           }
@@ -122,7 +122,7 @@ export default class ColumnManager {
       if (!column.children) {
         leafColumns.push(column)
       } else {
-        leafColumns.push(...this._leafColumns(column.children)) // 递归
+        leafColumns.push(...this._leafColumns(column.children))
       }
     })
     return leafColumns

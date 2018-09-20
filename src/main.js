@@ -8,6 +8,7 @@ import store from './store/'
 // style
 import './assets/iconfont/iconfont.css'
 import './assets/stylus/main.styl'
+
 // axios mock
 import './api/mock'
 import axios from 'axios'

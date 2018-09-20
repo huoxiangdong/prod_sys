@@ -1,33 +1,33 @@
-import PropTypes from '@util/vue-types'
-import BaseMixin from '@util/vc-util/BaseMixin'
-import { connect } from '@util/store'
+import PROPTYPES from '../../_utils/types'
+import baseMixin from '../../_utils/baseMixin'
+import { Connect } from '../../_utils/store'
 import TableRow from './TableRow'
 import { remove } from './utils'
-import { initDefaultProps, getOptionProps } from '@util/vc-util/props-util'
+import { initDefaultProps, getOptionProps } from '../../_utils/props'
 
 export const ExpandableTableProps = () => ({
-  expandIconAsCell: PropTypes.bool,
-  expandRowByClick: PropTypes.bool,
-  expandedRowKeys: PropTypes.array,
-  expandedRowClassName: PropTypes.func,
-  defaultExpandAllRows: PropTypes.bool,
-  defaultExpandedRowKeys: PropTypes.array,
-  expandIconColumnIndex: PropTypes.number,
-  expandedRowRender: PropTypes.func,
-  childrenColumnName: PropTypes.string,
-  indentSize: PropTypes.number,
-  // onExpand: PropTypes.func,
-  // onExpandedRowsChange: PropTypes.func,
-  columnManager: PropTypes.object.isRequired,
-  store: PropTypes.object.isRequired,
-  prefixCls: PropTypes.string.isRequired,
-  data: PropTypes.array,
-  getRowKey: PropTypes.func,
+  expandIconAsCell: PROPTYPES.bool,
+  expandRowByClick: PROPTYPES.bool,
+  expandedRowKeys: PROPTYPES.array,
+  expandedRowClassName: PROPTYPES.func,
+  defaultExpandAllRows: PROPTYPES.bool,
+  defaultExpandedRowKeys: PROPTYPES.array,
+  expandIconColumnIndex: PROPTYPES.number,
+  expandedRowRender: PROPTYPES.func,
+  childrenColumnName: PROPTYPES.string,
+  indentSize: PROPTYPES.number,
+  // onExpand: PROPTYPES.func,
+  // onExpandedRowsChange: PROPTYPES.func,
+  columnManager: PROPTYPES.object.isRequired,
+  store: PROPTYPES.object.isRequired,
+  prefixCls: PROPTYPES.string.isRequired,
+  data: PROPTYPES.array,
+  getRowKey: PROPTYPES.func,
 })
 
 const ExpandableTable = {
   name: 'ExpandableTable',
-  mixins: [BaseMixin],
+  mixins: [baseMixin],
   props: initDefaultProps(ExpandableTableProps(), {
     expandIconAsCell: false,
     expandedRowClassName: () => '',
@@ -72,8 +72,10 @@ const ExpandableTable = {
   },
   watch: {
     expandedRowKeys (val) {
-      this.store.setState({
-        expandedRowKeys: val,
+      this.$nextTick(() => {
+        this.store.setState({
+          expandedRowKeys: val,
+        })
       })
     },
   },
@@ -124,6 +126,14 @@ const ExpandableTable = {
 
     renderExpandedRow (record, index, expandedRowRender, className, ancestorKeys, indent, fixed) {
       const { prefixCls, expandIconAsCell, indentSize } = this
+      const parentKey = ancestorKeys[ancestorKeys.length - 1]
+      const rowKey = `${parentKey}-extra-row`
+      const components = {
+        body: {
+          row: 'tr',
+          cell: 'td',
+        },
+      }
       let colCount
       if (fixed === 'left') {
         colCount = this.columnManager.leftLeafColumns().length
@@ -134,12 +144,16 @@ const ExpandableTable = {
       }
       const columns = [{
         key: 'extra-row',
-        customRender: () => ({
-          attrs: {
-            colSpan: colCount,
-          },
-          children: fixed !== 'right' ? expandedRowRender(record, index, indent) : '&nbsp;',
-        }),
+        customRender: () => {
+          const { expandedRowKeys } = this.store.getState()
+          const expanded = !!~expandedRowKeys.indexOf(parentKey)
+          return {
+            attrs: {
+              colSpan: colCount,
+            },
+            children: fixed !== 'right' ? expandedRowRender(record, index, indent, expanded) : '&nbsp;',
+          }
+        },
       }]
       if (expandIconAsCell && fixed !== 'right') {
         columns.unshift({
@@ -147,14 +161,7 @@ const ExpandableTable = {
           customRender: () => null,
         })
       }
-      const parentKey = ancestorKeys[ancestorKeys.length - 1]
-      const rowKey = `${parentKey}-extra-row`
-      const components = {
-        body: {
-          row: 'tr',
-          cell: 'td',
-        },
-      }
+
       return (
         <TableRow
           key={rowKey}
@@ -194,13 +201,7 @@ const ExpandableTable = {
       }
 
       if (childrenData) {
-        rows.push(
-          ...renderRows(
-            childrenData,
-            nextIndent,
-            nextAncestorKeys,
-          )
-        )
+        renderRows(childrenData, nextIndent, rows, nextAncestorKeys)
       }
     },
   },
@@ -219,6 +220,7 @@ const ExpandableTable = {
       renderExpandIndentCell: this.renderExpandIndentCell,
     })
   },
+  
 }
 
-export default connect()(ExpandableTable)
+export default Connect()(ExpandableTable) // 传入组件

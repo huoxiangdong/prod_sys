@@ -1,9 +1,9 @@
-import PropTypes from '@util/vue-types'
+import PROPTYPES from '../../_utils/types'
 import TableHeaderRow from './TableHeaderRow'
 
 function getHeaderRows (columns, currentRow = 0, rows) {
   rows = rows || []
-  rows[currentRow] = rows[currentRow] || [] // 记录行数
+  rows[currentRow] = rows[currentRow] || []
 
   columns.forEach(column => {
     if (column.rowSpan && rows.length < column.rowSpan) {
@@ -18,7 +18,7 @@ function getHeaderRows (columns, currentRow = 0, rows) {
       column,
     }
     if (column.children) {
-      getHeaderRows(column.children, currentRow + 1, rows) // 递归
+      getHeaderRows(column.children, currentRow + 1, rows)
     }
     if ('colSpan' in column) {
       cell.colSpan = column.colSpan
@@ -36,9 +36,9 @@ function getHeaderRows (columns, currentRow = 0, rows) {
 export default {
   name: 'TableHeader',
   props: {
-    fixed: PropTypes.string,
-    columns: PropTypes.array.isRequired,
-    expander: PropTypes.object.isRequired,
+    fixed: PROPTYPES.string,
+    columns: PROPTYPES.array.isRequired,
+    expander: PROPTYPES.object.isRequired,
 
   },
   inject: {

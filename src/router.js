@@ -30,7 +30,7 @@ export default new Router({
       },
     {
       path:'test',
-      component: () => import('@/views/test.vue')
+      component: () => import('@/views/TEST.vue')
     },
     {
       path: 'configure',
