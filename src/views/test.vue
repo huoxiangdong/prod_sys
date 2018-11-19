@@ -1,62 +1,78 @@
-<script>
-import Table from '../supply/assembly/vc-table'
-import '../supply/assembly/vc-table/assets/index.styl'
+<template>
+  <a-table :columns="columns" :dataSource="data">
+    
+    <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
 
-const data = [
-  {
-    a: 'a1',
-  },
-  {
-    a: 'a2',
-    b: 'b2',
-    children: [
-      {
-        a: 'a2-1',
-        b: 'b2-1',
-      },
-      {
-        a: 'a2-2',
-        b: 'b2-2',
-      },
-    ],
-  },
-  {
-    a: 'a3',
-    c: 'c3',
-    d: 'd3',
-  },
-]
+    <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
+
+    <span slot="tags" slot-scope="tags">
+      <a-tag v-for="tag in tags" color="blue" :key="tag">{{tag}}</a-tag>
+    </span>
+
+    <span slot="action" slot-scope="text, record">
+      <a href="javascript:;">Invite 一 {{record.name}}</a>
+      <a-divider type="vertical" />
+      <a href="javascript:;">Delete</a>
+      <a-divider type="vertical" />
+      <a href="javascript:;" class="ant-dropdown-link">
+        More actions <a-icon type="down" />
+      </a>
+    </span>
+
+  </a-table>
+
+</template>
+<script>
+const columns = [{
+  dataIndex: 'name',
+  key: 'name',
+  slots: { title: 'customTitle' },
+  scopedSlots: { customRender: 'name' },
+}, {
+  title: 'Age',
+  dataIndex: 'age',
+  key: 'age',
+}, {
+  title: 'Address',
+  dataIndex: 'address',
+  key: 'address',
+}, {
+  title: 'Tags',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+}, {
+  title: 'Action',
+  key: 'action',
+  scopedSlots: { customRender: 'action' },
+}];
+
+const data = [{
+  key: '1',
+  name: 'John Brown',
+  age: 32,
+  address: 'New York No. 1 Lake Park',
+  tags: ['nice', 'developer'],
+}, {
+  key: '2',
+  name: 'Jim Green',
+  age: 42,
+  address: 'London No. 1 Lake Park',
+  tags: ['loser'],
+}, {
+  key: '3',
+  name: 'Joe Black',
+  age: 32,
+  address: 'Sidney No. 1 Lake Park',
+  tags: ['cool', 'teacher'],
+}];
 
 export default {
-  methods: {
-    handleClick (record, e) {
-      e.preventDefault()
-      console.log(record.a)
-    },
-  },
-
-  render () {
-    const columns = [
-      { title: 'title1', dataIndex: 'a', key: 'a', width: 100 },
-      { title: 'title2', dataIndex: 'b', key: 'b', width: 100 },
-      { title: 'title3', dataIndex: 'c', key: 'c', width: 200 },
-      {
-        title: 'Operations', dataIndex: '', key: 'x', customRender: (text, record) => {
-          return <a href='javascript:;' onClick={e => this.handleClick(record, e)}>click {record.a}</a>
-        },
-      },
-    ]
-    return (
-      <div>
-        <h2>sub table</h2>
-        <Table
-          columns={columns}
-          expandIconAsCell
-          data={data}
-          rowKey={record => record.a}
-        />
-      </div>
-    )
-  },
+  data() {
+    return {
+      data,
+      columns,
+    }
+  }
 }
 </script>

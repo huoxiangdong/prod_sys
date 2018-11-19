@@ -29,6 +29,14 @@ window.warn = Vue.util.warn
 
 Vue.config.productionTip = false
 
+
+/**
+ * 
+  */
+import antd from './supply/antd/components'
+import './supply/antd/components/style.js'
+Vue.use(antd)
+
 new Vue({
   router,
   store,
